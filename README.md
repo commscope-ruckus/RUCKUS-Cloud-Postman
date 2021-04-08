@@ -5,6 +5,6 @@ assigned automatically by the scripts in this collection.
 
 Note: Ruckus Cloud write-APIs can be asynchronous. A response of 202 indicates an asynchronous 
 response. That needs to be considered when writing API calls using python or any other language. 
-Please refer to Ruckus Cloud python examples in this repository for details.
+Please refer to Ruckus Cloud python examples in the repository Ruckus-Cloud-Python-Scripts for details.
 
 Any other response indicates a synchronous response. The read-APIs are always synchronous.
