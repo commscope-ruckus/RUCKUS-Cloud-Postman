@@ -9,7 +9,7 @@ Please refer to Ruckus Cloud python examples in the repository Ruckus-Cloud-Pyth
 
 Any other response indicates a synchronous response. The read-APIs are always synchronous.
 
-# RUCKUS Cloud with MSP-Tenant calls
+# RUCKUS Cloud with MSP-EC calls
 This collection shows how to manage the customer objects in a MSP account.
 MSP accounts have different security contexts for the MSP and the customers managed by the MSP. After retrieving the API token using the MSP credentials, you will only be able to do things at the MSP level.
 There is an additional call to switch to a customer tenant, in order to be able to manage the customer objects:
