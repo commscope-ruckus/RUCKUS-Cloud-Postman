@@ -8,12 +8,33 @@
 	"item": [
 		{
 			"name": "Get MSP token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"baseUrl\", \"https://ruckus.cloud\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"mspId\", jsonData.tenantId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"user@rwbigdog.com\",\n    \"password\": \"password\"\n}",
+					"raw": "{\n    \"username\": \"myaccount@acme.com\",\n    \"password\": \"password\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -61,6 +82,77 @@
 			"response": []
 		},
 		{
+			"name": "Create MSP-EC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"mspEcId\", jsonData.tenant_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Acme Sales\",\n    \"street_address\": \"350 West Java st\",\n    \"state\": \"CA\",\n    \"country\": \"US\",\n    \"postal_code\": \"95089\",\n    \"phone_number\": \"650-123-4567\",\n    \"fax_number\": \"650-123-9999\",\n    \"city\": \"Sunnyvale\",\n    \"mapping_url\": \"https//map.gogle.com/zsdweews\",\n    \"service_effective_date\": \"2023-01-04 22:00:00Z\",\n    \"service_expiration_date\": \"2023-07-04 22:00:00Z\",\n    \"admin_email\": \"john.wang@sampledomain.com\",\n    \"admin_firstname\": \"John\",\n    \"admin_lastname\": \"Wang\",\n    \"admin_role\": \"ADMIN\",\n    \"tenant_type\":\"MSP_EC\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspId}}/mspecaccounts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspId}}",
+						"mspecaccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update MSP-EC",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Acme Sales\",\n    \"street_address\": \"350 West Java st\",\n    \"state\": \"CA\",\n    \"country\": \"US\",\n    \"postal_code\": \"95089\",\n    \"phone_number\": \"408-123-4567\",\n    \"fax_number\": \"408-123-9999\",\n    \"city\": \"Sunnyvale\",\n    \"mapping_url\": \"https//map.gogle.com/zsdweews\",\n    \"service_effective_date\": \"2023-01-04 22:00:00Z\",\n    \"service_expiration_date\": \"2023-07-04 22:00:00Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspEcId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get MSP customers",
 			"event": [
 				{
@@ -68,7 +160,7 @@
 					"script": {
 						"exec": [
 							"const jsonData = pm.response.json();",
-							"pm.collectionVariables.set(\"customerId\", jsonData.data[0].id);"
+							"pm.collectionVariables.set(\"customerId\", jsonData.data[1].id);"
 						],
 						"type": "text/javascript"
 					}
@@ -101,6 +193,53 @@
 						"tenant",
 						"{{mspId}}",
 						"msp-ec"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get MSP customer details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspEcId}}"
 					]
 				}
 			},
@@ -339,6 +478,35 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete MSP-EC",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspEcId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -396,6 +564,10 @@
 		},
 		{
 			"key": "mspTenantId",
+			"value": ""
+		},
+		{
+			"key": "mspEcId",
 			"value": ""
 		}
 	]
