@@ -1,0 +1,672 @@
+{
+	"info": {
+		"_postman_id": "0642fb68-86ce-4e7c-a932-ebbce79fe02f",
+		"name": "Ruckus Cloud with MSP-EC calls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9262131"
+	},
+	"item": [
+		{
+			"name": "Get MSP token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"baseUrl\", \"https://ruckus.cloud\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"mspId\", jsonData.tenantId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"myaccount@acme.com\",\n    \"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/token",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get MSP tenant details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"mspAdminId\", jsonData.admins[0].id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/tenant/{{mspId}}?deep=true",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tenant",
+						"{{mspId}}"
+					],
+					"query": [
+						{
+							"key": "deep",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create MSP-EC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"mspEcId\", jsonData.tenant_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Acme Sales\",\n    \"street_address\": \"350 West Java st\",\n    \"state\": \"CA\",\n    \"country\": \"US\",\n    \"postal_code\": \"95089\",\n    \"phone_number\": \"954-9947539\",\n    \"fax_number\": \"650-123-9999\",\n    \"city\": \"Sunnyvale\",\n    \"mapping_url\": \"https//map.gogle.com/zsdweews\",\n    \"service_effective_date\": \"2023-01-03 22:00:00Z\",\n    \"service_expiration_date\": \"2024-01-03 22:00:00Z\",\n    \"admin_email\": \"marcelo.molinari@commscope.com\",\n    \"admin_firstname\": \"Marcelo\",\n    \"admin_lastname\": \"Molinari\",\n    \"admin_role\": \"ADMIN\",\n    \"tenant_type\":\"MSP_EC\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspId}}/mspecaccounts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspId}}",
+						"mspecaccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add MSP admin to MSP-EC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"msp_admin_id\": \"{{mspAdminId}}\",\n        \"msp_admin_role\": \"PRIME_ADMIN\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcId}}/delegatedmspadmins",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspEcId}}",
+						"delegatedmspadmins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create license assignment in MSP-EC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mspEcTenantId\": \"{{mspEcId}}\",\n    \"deviceType\": \"MSP_WIFI\",\n    \"quantity\": 1,\n    \"useTemporaryMspEntitlement\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/entitlement-assign/tenant/{{mspId}}/assignment",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"entitlement-assign",
+						"tenant",
+						"{{mspId}}",
+						"assignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update MSP-EC",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Acme Sales\",\n    \"street_address\": \"350 West Java st\",\n    \"state\": \"CA\",\n    \"country\": \"US\",\n    \"postal_code\": \"95089\",\n    \"phone_number\": \"408-123-4567\",\n    \"fax_number\": \"408-123-9999\",\n    \"city\": \"Sunnyvale\",\n    \"mapping_url\": \"https//map.gogle.com/zsdweews\",\n    \"service_effective_date\": \"2023-01-04 22:00:00Z\",\n    \"service_expiration_date\": \"2023-07-04 22:00:00Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspEcId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get MSP customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"customerId\", jsonData.data[1].id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"searchString\": \"\",\n    \"searchTargetFields\": [\n        \"name\"\n    ],\n    \"fields\": [\n        \"name\",\n        \"status\",\n        \"delegationExpiryDate\",\n        \"id\"\n    ],\n    \"sortField\": \"name\",\n    \"sortOrder\": \"ASC\",\n    \"page\": 1,\n    \"pageSize\": 25,\n    \"filters\": {}\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/viewmodel/tenant/{{mspId}}/msp-ec",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"viewmodel",
+						"tenant",
+						"{{mspId}}",
+						"msp-ec"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get MSP customer details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspEcId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Switch to customer tenant",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/login/tenant/token/{{customerId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"login",
+						"tenant",
+						"token",
+						"{{customerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create customer venue",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"venueId\", jsonData.response.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Warwick\",\n    \"address\": {\n        \"city\": \"Warwick\",\n        \"country\": \"England\",\n        \"timezone\": \"America/Los_Angeles\",\n        \"addressLine\": \"R. Rio Grande 551\",\n        \"latitude\": 37.4112751,\n        \"longitude\": -122.0191908\n    },\n    \"description\": \"My venue\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tenant/{{customerId}}/venue",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tenant",
+						"{{customerId}}",
+						"venue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get customer venues",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"venueId\", jsonData[0].id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/tenant/{{customerId}}/venue",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tenant",
+						"{{customerId}}",
+						"venue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get venue details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/tenant/{{customerId}}/venue/{{venueId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tenant",
+						"{{customerId}}",
+						"venue",
+						"{{venueId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update customer venue",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Warwick Castle\",\n    \"address\": {\n        \"city\": \"Warwick\",\n        \"country\": \"England\",\n        \"timezone\": \"America/Los_Angeles\",\n        \"addressLine\": \"Rapa Nui\",\n        \"latitude\": \"-27.120768\",\n        \"longitude\": \"-109.384822\"\n    },\n    \"description\": \"Super fun castle\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tenant/{{customerId}}/venue/{{venueId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tenant",
+						"{{customerId}}",
+						"venue",
+						"{{venueId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete customer venue",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/tenant/{{customerId}}/venue/{{venueId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tenant",
+						"{{customerId}}",
+						"venue",
+						"{{venueId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Return to MSP tenant",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/login/var/token/{{mspId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"login",
+						"var",
+						"token",
+						"{{mspId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete MSP-EC",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"mspservice",
+						"tenant",
+						"{{mspEcId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "customerId",
+			"value": "d808175536bb406e9c106d745b7154cd"
+		},
+		{
+			"key": "mspId",
+			"value": "6fd28189f9124e47b5272cbb7f077604"
+		},
+		{
+			"key": "venueId",
+			"value": "76ada32b923744a08f0c004329e5ac34"
+		},
+		{
+			"key": "baseUrlqaalto",
+			"value": "https://qaalto.ruckuswireless.com"
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://ruckus.cloud"
+		},
+		{
+			"key": "euBaseUrl",
+			"value": "https://eu.ruckus.cloud"
+		},
+		{
+			"key": "mspTenandId",
+			"value": ""
+		},
+		{
+			"key": "tenantId",
+			"value": ""
+		},
+		{
+			"key": "mspTenantId",
+			"value": ""
+		},
+		{
+			"key": "mspEcId",
+			"value": ""
+		},
+		{
+			"key": "mspAdminId",
+			"value": ""
+		}
+	]
+}
