@@ -1,0 +1,1613 @@
+{
+	"info": {
+		"_postman_id": "42c6c285-1f60-4d01-bfe5-a74685cb9dd9",
+		"name": "RUCKUS Cloud MSP JWT API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9262131"
+	},
+	"item": [
+		{
+			"name": "Walkthrough af MSP level",
+			"item": [
+				{
+					"name": "Get MSP token",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"baseUrl\", \"https://ruckus.cloud\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"mspTenantId\", jsonData.tenantId);",
+									"pm.collectionVariables.set(\"jwt\", jsonData.jwt);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"your.name@your_domain.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get MSP details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"mspAdminId\", jsonData.admins[0].id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspTenantId}}?deep=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspTenantId}}"
+							],
+							"query": [
+								{
+									"key": "deep",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create MSP-EC",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"mspEcTenantId\", jsonData.tenant_id);",
+									"pm.collectionVariables.set(\"requestId\", jsonData.requestId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Acme Sales\",\n    \"tenant_type\": \"MSP_EC\",\n    \"street_address\": \"350 W Java Dr, Sunnyvale, CA 94089, USA\",\n    \"city\": \"Sunnyvale\",\n    \"postal_code\": \"\",\n    \"state\": \"California\",\n    \"country\": \"United States\",\n    \"service_effective_date\": \"2023-04-22 16:09:42Z\",\n    \"service_expiration_date\": \"2024-04-22 06:59:59Z\",\n    \"admin_email\": \"marcelo.molinari@commscope.com\",\n    \"admin_firstname\": \"Marcelo\",\n    \"admin_lastname\": \"Molinari\",\n    \"admin_role\": \"PRIME_ADMIN\",\n    \"licenses\": {\n        \"trialAction\": \"UNASSIGNED\",\n        \"assignments\": [\n            {\n                \"deviceType\": \"MSP_WIFI\",\n                \"quantity\": 1,\n                \"isTrial\": false\n            },\n            {\n                \"deviceType\": \"MSP_SWITCH\",\n                \"deviceSubType\": \"ICX71\",\n                \"quantity\": 1,\n                \"isTrial\": false\n            }\n        ]\n    },\n    \"admin_delegations\": [\n        {\n            \"msp_admin_id\": \"ab4145d99bf44890a2f8d8d9478fd2dd\",\n            \"msp_admin_role\": \"PRIME_ADMIN\"\n        }\n    ],\n    \"delegations\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspTenantId}}/mspecaccounts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mspservice",
+								"tenant",
+								"{{mspTenantId}}",
+								"mspecaccounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status of asynchronous request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspTenantId}}/request/{{requestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspTenantId}}",
+								"request",
+								"{{requestId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all MSP-ECs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"mspEcTenantId\", jsonData[10].tenant_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspTenantId}}/mspecaccounts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mspservice",
+								"tenant",
+								"{{mspTenantId}}",
+								"mspecaccounts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Walkthrough at MSP-EC level",
+			"item": [
+				{
+					"name": "Get MSP-EC details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcTenantId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mspservice",
+								"tenant",
+								"{{mspEcTenantId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get venues",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"venueId\", jsonData[0].id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/venue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"venue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create venue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"venueId\", jsonData.response.id);",
+									"pm.collectionVariables.set(\"requestId\", jsonData.requestId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Building 350\",\n    \"address\": {\n        \"city\": \"San Jose\",\n        \"country\": \"United States\",\n        \"timezone\": \"America/Los_Angeles\",\n        \"addressLine\": \"350 Java Dr\",\n        \"latitude\": 37.4112751,\n        \"longitude\": -122.0191908\n    },\n    \"description\": \"San Jose venue\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/venue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"venue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add AP to venue",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003261\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"name\": \"My AP\",\n        \"serialNumber\": \"{{apSerialNumber}}\",\n        \"venueId\": \"{{venueId}}\",\n        \"description\": \"This is my AP\",\n        \"tags\": [\n            \"Test\"\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/ap",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"ap"
+							]
+						},
+						"description": "Use this API command to add a list of new APs."
+					},
+					"response": []
+				},
+				{
+					"name": "Get APs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/ap",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"ap"
+							]
+						},
+						"description": "Use this API command to get the network list."
+					},
+					"response": []
+				},
+				{
+					"name": "Add switch to venue",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEK3822Q3DT\");",
+									"pm.collectionVariables.set(\"name\", \"ICX7150-A\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name}}\",\n    \"id\": \"{{switchSerialNumber}}\",\n    \"description\": \"\",\n    \"venueId\": \"{{venueId}}\",\n    \"stackMembers\": [],\n    \"enableStack\": false,\n    \"jumboMode\": false,\n    \"igmpSnooping\": \"none\",\n    \"spanningTreePriority\": \"\",\n    \"rearModule\": \"none\",\n    \"specifiedType\": \"AUTO\",\n    \"trustPorts\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/switch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"switch"
+							]
+						},
+						"description": "Use this API command to add a list of new APs."
+					},
+					"response": []
+				},
+				{
+					"name": "Get switches",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEK3822Q3DT\");",
+									"pm.collectionVariables.set(\"name\", \"ICX7150-A\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"switchMac\", jsonData[0].id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/switch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"switch"
+							]
+						},
+						"description": "Use this API command to add a list of new APs."
+					},
+					"response": []
+				},
+				{
+					"name": "Create network",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"ssid\", \"Milpitas\");",
+									"pm.collectionVariables.set(\"passphrase\", \"ruckus123!\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"networkId\", jsonData.response.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"wlan\": {\n        \"ssid\": \"{{ssid}}\",\n        \"advancedCustomization\": {\n            \"maxClientsOnWlanPerRadio\": 100,\n            \"enableBandBalancing\": true,\n            \"clientIsolation\": false,\n            \"clientIsolationOptions\": {\n                \"autoVrrp\": false\n            },\n            \"hideSsid\": false,\n            \"forceMobileDeviceDhcp\": false,\n            \"clientLoadBalancingEnable\": true,\n            \"directedThreshold\": 5,\n            \"enableNeighborReport\": true,\n            \"enableFastRoaming\": false,\n            \"mobilityDomainId\": 1,\n            \"radioCustomization\": {\n                \"rfBandUsage\": \"BOTH\",\n                \"bssMinimumPhyRate\": \"default\",\n                \"phyTypeConstraint\": \"OFDM\",\n                \"managementFrameMinimumPhyRate\": \"6\"\n            },\n            \"enableSyslog\": false,\n            \"clientInactivityTimeout\": 120,\n            \"accessControlEnable\": false,\n            \"respectiveAccessControl\": true,\n            \"vlanPool\": null,\n            \"applicationPolicyEnable\": false,\n            \"l2AclEnable\": false,\n            \"l3AclEnable\": false,\n            \"wifiCallingEnabled\": false,\n            \"wifiCallingIds\": [],\n            \"proxyARP\": false,\n            \"enableAirtimeDecongestion\": false,\n            \"enableJoinRSSIThreshold\": false,\n            \"joinRSSIThreshold\": -85,\n            \"enableTransientClientManagement\": false,\n            \"joinWaitTime\": 30,\n            \"joinExpireTime\": 300,\n            \"joinWaitThreshold\": 10,\n            \"enableOptimizedConnectivityExperience\": false,\n            \"broadcastProbeResponseDelay\": 15,\n            \"rssiAssociationRejectionThreshold\": -75,\n            \"enableAntiSpoofing\": false,\n            \"enableArpRequestRateLimit\": true,\n            \"arpRequestRateLimit\": 15,\n            \"enableDhcpRequestRateLimit\": true,\n            \"dhcpRequestRateLimit\": 15,\n            \"dnsProxyEnabled\": false\n        },\n        \"wlanSecurity\": \"WPA2Personal\",\n        \"macAddressAuthentication\": false,\n        \"vlanId\": 1,\n        \"enabled\": true,\n        \"macAuthMacFormat\": \"UpperDash\",\n        \"managementFrameProtection\": \"Disabled\",\n        \"passphrase\": \"{{passphrase}}\"\n    },\n    \"name\": \"{{ssid}}\",\n    \"type\": \"psk\",\n    \"description\": \"\",\n    \"venues\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/network/deep",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"network",
+								"deep"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get networks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/network",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"network"
+							]
+						},
+						"description": "Use this API command to get the network list."
+					},
+					"response": []
+				},
+				{
+					"name": "Get network details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/network/{{networkId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"network",
+								"{{networkId}}"
+							]
+						},
+						"description": "Use this API command to get the network list."
+					},
+					"response": []
+				},
+				{
+					"name": "Create venue-network association",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"networkVenueId\", jsonData.response.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"venueId\": \"{{venueId}}\",\n    \"dual5gEnabled\": true,\n    \"tripleBandEnabled\": false,\n    \"networkId\": \"{{networkId}}\",\n    \"allApGroupsRadio\": \"Both\",\n    \"allApGroupsRadioTypes\": [\n        \"2.4-GHz\",\n        \"5-GHz\"\n    ],\n    \"isAllApGroups\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/network-venue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"network-venue"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Get venue-network association",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/venue/{{venueId}}/venue-network",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"venue",
+								"{{venueId}}",
+								"venue-network"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Change AP radio parameters at the venue level",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003261\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"requestId\", jsonData.requestId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"radioParams24G\": {\n        \"allowedChannels\": [\n            \"1\",\n            \"6\",\n            \"11\"\n        ],\n        \"channelBandwidth\": \"AUTO\",\n        \"method\": \"BACKGROUND_SCANNING\",\n        \"changeInterval\": 33,\n        \"scanInterval\": 20,\n        \"txPower\": \"Auto\"\n    },\n    \"radioParams50G\": {\n        \"allowedIndoorChannels\": [\n            \"36\",\n            \"149\"\n        ],\n        \"allowedOutdoorChannels\": [\n            \"36\",\n            \"149\"\n        ],\n        \"channelBandwidth\": \"AUTO\",\n        \"method\": \"BACKGROUND_SCANNING\",\n        \"changeInterval\": 33,\n        \"scanInterval\": 20,\n        \"txPower\": \"Auto\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/venue/{{venueId}}/radio",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"venue",
+								"{{venueId}}",
+								"radio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get AP-venue radio settings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/venue/{{venueId}}/radio",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"venue",
+								"{{venueId}}",
+								"radio"
+							]
+						},
+						"description": "Use this API command to get the network list."
+					},
+					"response": []
+				},
+				{
+					"name": "Change radio parameters in a single AP",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003261\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enable24G\": true,\n    \"enable50G\": true,\n    \"enable6G\": false,\n    \"apRadioParams24G\": {\n        \"allowedChannels\": [\n            \"1\",\n            \"6\",\n            \"11\"\n        ],\n        \"channelBandwidth\": \"AUTO\",\n        \"method\": \"BACKGROUND_SCANNING\",\n        \"changeInterval\": 33,\n        \"txPower\": \"-3\",\n        \"manualChannel\": 0\n    },\n    \"apRadioParams50G\": {\n        \"allowedChannels\": [\n            \"149\",\n            \"153\",\n            \"157\",\n            \"161\",\n            \"165\"\n        ],\n        \"channelBandwidth\": \"20MHz\",\n        \"method\": \"BACKGROUND_SCANNING\",\n        \"changeInterval\": 33,\n        \"txPower\": \"-3\",\n        \"manualChannel\": 0\n    },\n    \"apRadioParamsDual5G\": null,\n    \"apRadioParams6G\": null,\n    \"useVenueSettings\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/ap/{{apSerialNumber}}/radio",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"ap",
+								"{{apSerialNumber}}",
+								"radio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Configure 802.11r and 802.11k",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"enableNeighborReport\", false);",
+									"pm.collectionVariables.set(\"enableFastRoaming\", true);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"psk\",\n    \"wlan\": {\n        \"wlanSecurity\": \"WPA2Personal\",\n        \"advancedCustomization\": {\n            \"userUplinkRateLimiting\": 0,\n            \"userDownlinkRateLimiting\": 0,\n            \"totalUplinkRateLimiting\": 0,\n            \"totalDownlinkRateLimiting\": 0,\n            \"maxClientsOnWlanPerRadio\": 100,\n            \"enableBandBalancing\": true,\n            \"clientIsolation\": false,\n            \"clientIsolationOptions\": {\n                \"autoVrrp\": false\n            },\n            \"hideSsid\": false,\n            \"forceMobileDeviceDhcp\": false,\n            \"clientLoadBalancingEnable\": true,\n            \"directedThreshold\": 5,\n            \"enableNeighborReport\": \"{{enableNeighborReport}}\",\n            \"enableFastRoaming\": \"{{enableFastRoaming}}\",\n            \"mobilityDomainId\": 1,\n            \"radioCustomization\": {\n                \"rfBandUsage\": \"BOTH\",\n                \"bssMinimumPhyRate\": \"default\",\n                \"phyTypeConstraint\": \"OFDM\",\n                \"managementFrameMinimumPhyRate\": \"6\"\n            },\n            \"enableSyslog\": false,\n            \"clientInactivityTimeout\": 120,\n            \"accessControlEnable\": false,\n            \"respectiveAccessControl\": true,\n            \"applicationPolicyEnable\": false,\n            \"l2AclEnable\": false,\n            \"l3AclEnable\": false,\n            \"wifiCallingEnabled\": false,\n            \"proxyARP\": false,\n            \"enableAirtimeDecongestion\": false,\n            \"enableJoinRSSIThreshold\": false,\n            \"joinRSSIThreshold\": -85,\n            \"enableTransientClientManagement\": false,\n            \"joinWaitTime\": 30,\n            \"joinExpireTime\": 300,\n            \"joinWaitThreshold\": 10,\n            \"enableOptimizedConnectivityExperience\": false,\n            \"broadcastProbeResponseDelay\": 15,\n            \"rssiAssociationRejectionThreshold\": -75,\n            \"enableAntiSpoofing\": false,\n            \"enableArpRequestRateLimit\": true,\n            \"arpRequestRateLimit\": 15,\n            \"enableDhcpRequestRateLimit\": true,\n            \"dhcpRequestRateLimit\": 15,\n            \"dnsProxyEnabled\": false\n        },\n        \"macAddressAuthentication\": false,\n        \"macAuthMacFormat\": \"UpperDash\",\n        \"managementFrameProtection\": \"Disabled\",\n        \"vlanId\": 1,\n        \"ssid\": \"Milpitas\",\n        \"enabled\": true,\n        \"passphrase\": \"ruckus123!\"\n    },\n    \"tenantId\": \"63beff64a799410987164fc99e02039b\",\n    \"venues\": [\n        {\n            \"venueId\": \"28e056b381784443827bb7d971b46583\",\n            \"tripleBandEnabled\": false,\n            \"networkId\": \"a12fdf30235844998efcd7b247a077df\",\n            \"allApGroupsRadio\": \"Both\",\n            \"allApGroupsRadioTypes\": [\n                \"2.4-GHz\",\n                \"5-GHz\"\n            ],\n            \"isAllApGroups\": true,\n            \"id\": \"fb97e625ac404dacaccb85486f57198c\"\n        }\n    ],\n    \"name\": \"Milpitas\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/network/{{networkId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"network",
+								"{{networkId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get clients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}/wifi/client",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"wifi",
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create ICX VLAN profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"VLANs 120 and 121\",\n    \"name\": \"vlan120-121\",\n    \"profileType\": \"Regular\",\n    \"venues\": [\n        \"{{venueId}}\"\n    ],\n    \"vlans\": [\n        {\n            \"rootBridgeFamilyId\": \"ICX7150\",\n            \"spanningTreePriority\": 0,\n            \"spanningTreeProtocol\": \"rstp\",\n            \"vlanId\": 120,\n            \"vlanName\": \"Test1\"\n        },\n                {\n            \"rootBridgeFamilyId\": \"ICX7150\",\n            \"spanningTreePriority\": 0,\n            \"spanningTreeProtocol\": \"rstp\",\n            \"vlanId\": 121,\n            \"vlanName\": \"Test2\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"profile"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Get ICX switch profiles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/profiles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"profiles"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Get ICX switch ports",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/port/switch/{{switchMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"port",
+								"switch",
+								"{{switchMac}}"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Get ICX switch port details",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"port\", \"1/1/8\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/port/switch/{{switchMac}}/portId/{{port}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"port",
+								"switch",
+								"{{switchMac}}",
+								"portId",
+								"{{port}}"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Get ICX switch VLANs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/vlans/switch/{{switchMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"vlans",
+								"switch",
+								"{{switchMac}}"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Change ICX switch port",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"switchId\": \"c0:c5:20:92:a5:2d\",\n        \"port\": {\n            \"name\": \"OneOneEight\",\n            \"portEnable\": true,\n            \"poeEnable\": true,\n            \"poeClass\": \"ZERO\",\n            \"poePriority\": 3,\n            \"portProtected\": false,\n            \"lldpEnable\": true,\n            \"portSpeed\": \"AUTO\",\n            \"rstpAdminEdgePort\": false,\n            \"stpBpduGuard\": false,\n            \"stpRootGuard\": false,\n            \"voiceVlan\": null,\n            \"lldpQos\": [],\n            \"dhcpSnoopingTrust\": false,\n            \"ipsg\": false,\n            \"revert\": false,\n            \"ignoreFields\": \"untaggedVlan,taggedVlans\",\n            \"port\": \"1/1/8\",\n            \"ports\": [\n                \"1/1/8\"\n            ]\n        }\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/switch/tenant/{{mspEcTenantId}}/port/switches",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"switch",
+								"tenant",
+								"{{mspEcTenantId}}",
+								"port",
+								"switches"
+							]
+						},
+						"description": "Use this API command to get venue-network association list"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete MSP-EC",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcTenantId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mspservice",
+								"tenant",
+								"{{mspEcTenantId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": ""
+		},
+		{
+			"key": "mspId",
+			"value": ""
+		},
+		{
+			"key": "customerId",
+			"value": ""
+		},
+		{
+			"key": "tenantId",
+			"value": ""
+		},
+		{
+			"key": "mspEcTenantId",
+			"value": ""
+		},
+		{
+			"key": "mspTenantId",
+			"value": ""
+		},
+		{
+			"key": "mspEcId",
+			"value": ""
+		},
+		{
+			"key": "mspAdminId",
+			"value": ""
+		},
+		{
+			"key": "venueId",
+			"value": ""
+		},
+		{
+			"key": "serialNumber",
+			"value": ""
+		},
+		{
+			"key": "switchSerialNumber",
+			"value": ""
+		},
+		{
+			"key": "name",
+			"value": ""
+		},
+		{
+			"key": "ssid",
+			"value": ""
+		},
+		{
+			"key": "passphrase",
+			"value": ""
+		},
+		{
+			"key": "networkId",
+			"value": ""
+		},
+		{
+			"key": "networkVenueId",
+			"value": ""
+		},
+		{
+			"key": "apSerialNumber",
+			"value": ""
+		},
+		{
+			"key": "requestId",
+			"value": ""
+		},
+		{
+			"key": "clientMac",
+			"value": ""
+		},
+		{
+			"key": "enableNeighborReport",
+			"value": ""
+		},
+		{
+			"key": "enableFastRoaming",
+			"value": ""
+		},
+		{
+			"key": "jwt",
+			"value": ""
+		},
+		{
+			"key": "switchMac",
+			"value": ""
+		},
+		{
+			"key": "port",
+			"value": ""
+		}
+	]
+}
