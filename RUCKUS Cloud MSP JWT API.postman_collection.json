@@ -38,7 +38,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"your-email\",\n    \"password\": \"password\"\n}",
+							"raw": "{\n    \"username\": \"your_email\",\n    \"password\": \"password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -83,7 +83,13 @@
 							]
 						},
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-rks-tenantid",
+								"value": "{{mspTenantId}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/api/tenant/{{mspTenantId}}?deep=true",
 							"host": [
@@ -279,8 +285,8 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "Content-Type",
-								"value": "application/json",
+								"key": "x-rks-tenantid",
+								"value": "{{mspEcTenantId}}",
 								"type": "text"
 							}
 						],
@@ -289,15 +295,20 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/mspservice/tenant/{{mspEcTenantId}}",
+							"raw": "{{baseUrl}}/api/tenant/{{mspEcTenantId}}?deep=true",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
-								"mspservice",
 								"tenant",
 								"{{mspEcTenantId}}"
+							],
+							"query": [
+								{
+									"key": "deep",
+									"value": "true"
+								}
 							]
 						}
 					},
@@ -526,7 +537,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEL3822Q3AB\");",
+									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEK3822A1BC\");",
 									"pm.collectionVariables.set(\"name\", \"ICX7150-A\");"
 								],
 								"type": "text/javascript"
