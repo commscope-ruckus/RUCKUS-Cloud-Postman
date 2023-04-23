@@ -5,7 +5,7 @@ Many variables will be assigned automatically by the scripts in this collection,
 
 Note: Many RUCKUS Cloud write-APIs are asynchronous. A response of 202 indicates an asynchronous 
 call. That needs to be considered when writing API calls using python or any other language. 
-Please see examples in the repository Ruckus-Cloud-Python-Scripts for details.
+Please see examples in the repository RUCKUS-Cloud-Python-Scripts for details.
 Any other response indicates a synchronous response. The read-APIs are always synchronous.
 
 # RUCKUS Cloud MSP JWT API
