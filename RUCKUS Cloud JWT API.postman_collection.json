@@ -38,7 +38,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"your.name@your_domain.com\",\n    \"password\": \"password\"\n}",
+							"raw": "{\n    \"username\": \"your-email\",\n    \"password\": \"password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -242,7 +242,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003261\");"
+									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003200\");"
 								],
 								"type": "text/javascript"
 							}
@@ -381,7 +381,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEK3822Q3DT\");",
+									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEL3822Q3AB\");",
 									"pm.collectionVariables.set(\"name\", \"ICX7150-A\");"
 								],
 								"type": "text/javascript"
