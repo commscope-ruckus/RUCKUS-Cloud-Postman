@@ -1,7 +1,7 @@
 # RUCKUS Cloud JWT API
 Use this collection to assist in the development of apps using RUCKUS Cloud.
 You need to enter your credentials in the body of the /token call. This API uses JSON Web Token for authentication.
-Many variables will be assigned automatically by the scripts in this collection, using Pre-request Script and Tests in Postman. Change the variable values as appropriate (for instance, the AP and ICX switch serial number, ssid, etc)
+Many variables will be assigned automatically by the scripts in this collection, using Pre-request Script and Tests in Postman. Change the variable values as appropriate (for instance, the AP and ICX switch serial number, network ssid, etc)
 
 Note: Many RUCKUS Cloud write-APIs are asynchronous. A response of 202 indicates an asynchronous 
 response. That needs to be considered when writing API calls using python or any other language. 
