@@ -1,4 +1,4 @@
-# RUCKUS Cloud Postman collection
+# RUCKUS Cloud Postman collection - Uses API-KEY - Deprecated
 Use this collection to assist in the development of apps using Ruckus Cloud. You need to input your
 tenantId, username, password and AP serial number at the tab "Variables". The other variables will be 
 assigned automatically by the scripts in this collection.
