@@ -22,7 +22,7 @@ Please see examples in the repository RUCKUS-Cloud-Python-Scripts for details.
 Any other response indicates a synchronous response. The read-APIs are always synchronous.
 
 # General Notes
-- You need to enter your credentials in the /token call, and edit the serial number for the access point at /venues/aps and for the ICX switch at /switches.
+- You need to enter your credentials in the /token call, edit the serial number for the access point at /venues/aps and for the ICX switch at /switches.
 - Older collections can be found in the archive folder.
 
 
