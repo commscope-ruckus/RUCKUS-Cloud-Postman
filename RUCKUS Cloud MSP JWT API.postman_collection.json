@@ -431,7 +431,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003200\");"
+									"pm.collectionVariables.set(\"apSerialNumber\", \"111111111111\");"
 								],
 								"type": "text/javascript"
 							}
@@ -537,7 +537,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEK3822A1BC\");",
+									"pm.collectionVariables.set(\"switchSerialNumber\", \"AAAAAAAAAAA\");",
 									"pm.collectionVariables.set(\"name\", \"ICX7150-A\");"
 								],
 								"type": "text/javascript"
@@ -595,7 +595,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"switchSerialNumber\", \"FEK3822Q3DT\");",
+									"pm.collectionVariables.set(\"switchSerialNumber\", \"AAAAAAAAAAA\");",
 									"pm.collectionVariables.set(\"name\", \"ICX7150-A\");"
 								],
 								"type": "text/javascript"
@@ -936,7 +936,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003261\");"
+									"pm.collectionVariables.set(\"apSerialNumber\", \"111111111111\");"
 								],
 								"type": "text/javascript"
 							}
@@ -1056,7 +1056,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"apSerialNumber\", \"451972003261\");"
+									"pm.collectionVariables.set(\"apSerialNumber\", \"111111111111\");"
 								],
 								"type": "text/javascript"
 							}
