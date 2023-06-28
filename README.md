@@ -22,7 +22,7 @@ Please see examples in the repository RUCKUS-Cloud-Python-Scripts for details.
 Any other response indicates a synchronous response. The read-APIs are always synchronous.
 
 # RUCKUS Cloud JWT API
-This collection still uses many of the old endpoints (same as the collection which uses AP-KEY).
+This collection still uses many of the old endpoints (same as the deprecated collection which uses API-KEY).
 Use this collection to assist in the development of apps using RUCKUS Cloud.
 You need to enter your credentials in the body of the /token call. This API uses JSON Web Token for authentication.
 Many variables will be assigned automatically by the scripts in this collection, using Pre-request Script and Tests in Postman. Change the variable values as appropriate (for instance, the AP and ICX switch serial number, network ssid, etc)
@@ -33,7 +33,7 @@ Please see examples in the repository RUCKUS-Cloud-Python-Scripts for details.
 Any other response indicates a synchronous response. The read-APIs are always synchronous.
 
 # RUCKUS Cloud MSP JWT API
-This collection still uses many of the old endpoints (same as the collection which uses AP-KEY).
+This collection still uses many of the old endpoints (same as the deprecated collection which uses API-KEY).
 This collection shows how to manage delegated accounts in RUCKUS Cloud. It uses a MSP/MSP-EC delegation as an example.
 You need to enter the MSP credentials in the body of the /token call. This API uses JSON Web Token for authentication, but in addition, when managing delegated accounts (i.e. the MSP-EC), you need to do two additional things: a) use the tenantId for the MSP-EC in the URL; b) add a request header with a key named x-rks-tenantid and the value as the MSP-EC tenantId. 
 
